@@ -1,13 +1,9 @@
-from datetime import timedelta
-
 from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from models import UserIn, UserInDB, Token
+from fastapi.security import OAuth2PasswordRequestForm
+from models import UserIn, UserInDB, Token, User
 
 import security
 import db_manager
-
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 auth = APIRouter()
 
@@ -35,3 +31,8 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
         data={"sub": user.username}
     )
     return {"access_token": access_token, "token_type": "bearer"}
+
+
+@auth.get("/me/", response_model=User)
+async def read_users_me(current_user: User = Depends(security.get_current_active_user)):
+    return current_user
