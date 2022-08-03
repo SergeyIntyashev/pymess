@@ -43,7 +43,7 @@ services:
   db:
     image: postgres:latest
     volumes:
-      - postgres_data_cast:/var/lib/postgresql/data/
+      - postgres_data:/var/lib/postgresql/data/
     environment:
       - POSTGRES_USER=db_username
       - POSTGRES_PASSWORD=db_password
@@ -61,6 +61,4 @@ services:
       - sender_service
 
 volumes:
-  postgres_data_auth:
-  postgres_data_messenger:
-  postgres_data_sender:
+  postgres_data:
