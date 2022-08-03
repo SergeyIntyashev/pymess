@@ -1,14 +1,17 @@
 import os
+import sqlalchemy.sql.expression
+
 
 from sqlalchemy import (Column, Integer, MetaData, String, Table,
                         create_engine, Boolean)
-import sqlalchemy.sql.expression
 from databases import Database
+from dotenv import load_dotenv
 
 DATABASE_URI = os.getenv('DATABASE_URI')
 
 engine = create_engine(DATABASE_URI)
 metadata = MetaData()
+load_dotenv()
 
 users = Table(
     'users',
