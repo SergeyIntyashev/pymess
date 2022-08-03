@@ -1,0 +1,5 @@
+from os import environ
+
+ACCESS_TOKEN_EXPIRE_MINUTES = environ.get("ACCESS_TOKEN_EXPIRE_MINUTES", 60)
+SECRET_KEY = environ.get("SECRET_KEY")
+ALGORITHM = "HS256"
