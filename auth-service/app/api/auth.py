@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from models import UserIn
+from models import UserIn, UserInDB
 
 import security
 import db_manager
@@ -16,9 +16,8 @@ async def sign_up(payload: UserIn):
     if db_user:
         raise HTTPException(status_code=400, detail="Username already existed")
     hashed_password = security.get_password_hash(payload.password)
-    return await db_manager.add_user(
-        {'username': payload.username, 'fullname': payload.fullname, 'is_active': payload.is_active,
-         'hashed_password': hashed_password})
+    new_user = UserInDB(**payload, hashed_password=hashed_password)
+    return await db_manager.add_user(new_user)
 
 
 @auth.post('/login')
