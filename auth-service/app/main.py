@@ -1,11 +1,12 @@
 from fastapi import FastAPI
 
-from api.auth import auth
-from api.db import metadata, database, engine
+from app.api.auth import auth
+from app.api.db import metadata, database, engine
 
 metadata.create_all(engine)
 
-app = FastAPI(openapi_url="/api/v1/auth/openapi.json", docs_url="/api/v1/casts/docs")
+app = FastAPI(openapi_url="/api/v1/auth/openapi.json",
+              docs_url="/api/v1/auth/docs")
 app.include_router(auth, prefix='/api/v1/auth', tags=['auth'])
 
 
