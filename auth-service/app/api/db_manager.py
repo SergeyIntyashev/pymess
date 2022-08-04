@@ -1,5 +1,5 @@
-from db import users, database
-from models import UserInDB
+from app.api.db import users, database
+from app.api.models import UserInDB
 
 
 async def add_user(payload: UserInDB):
