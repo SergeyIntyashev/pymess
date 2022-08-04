@@ -1,64 +1,94 @@
 version: '3.7'
 
+networks:
+  app:
+    driver: bridge
+
 services:
 
-  messenger_service:
-    build: ./messenger-service
-    command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-    volumes:
-      - ./messenger-service/:/app/
-    ports:
-      - 8001:8000
-    environment:
-      - DATABASE_URI=postgresql://db_username:db_password@db/db_dev
-      - AUTH_SERVICE_HOST_URL=http://auth_service:8000/api/v1/auth/
-      - SENDER_SERVICE_HOST_URL=http://sender_service:8000/api/v1/sender/
-    depends_on:
-      - db
+  # messenger_service:
+  #   container_name: messenger_service
+  #   build: ./messenger-service
+  #   command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+  #   volumes:
+  #     - ./messenger-service/:/app/
+  #   ports:
+  #     - 8001:8000
+  #   env_file:
+  #     - ./.env
+  #   environment:
+  #     - DATABASE_URI=postgresql://${db_username}:${db_password}@${db_host}/${db_title}
+  #     - AUTH_SERVICE_HOST_URL=http://auth_service:8000/api/v1/auth/
+  #     - SENDER_SERVICE_HOST_URL=http://sender_service:8000/api/v1/sender/
+  #   depends_on:
+  #     - db
+  #   networks:
+  #     - app
 
   auth_service:
+    container_name: auth_service
     build: ./auth-service
     command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
     volumes:
       - ./auth-service/:/app/
     ports:
       - 8002:8000
+    env_file:
+      - ./.env
     environment:
-      - DATABASE_URI=postgresql://db_username:db_password@db/db_dev
+      - DATABASE_URI=postgresql://${db_username}:${db_password}@${db_host}/${db_title}
     depends_on:
       - db
+    networks:
+      - app
 
-  sender_service:
-    build: ./sender-service
-    command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-    volumes:
-      - ./sender-service/:/app/
-    ports:
-      - 8003:8000
-    environment:
-      - DATABASE_URI=postgresql://db_username:db_password@db/db_dev
-    depends_on:
-      - db
+  # sender_service:
+  #   container_name: sender_service
+  #   build: ./sender-service
+  #   command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+  #   volumes:
+  #     - ./sender-service/:/app/
+  #   ports:
+  #     - 8003:8000
+  #   env_file:
+  #     - ./.env
+  #   environment:
+  #     - DATABASE_URI=postgresql://${db_username}:${db_password}@${db_host}/${db_title}
+  #     - AUTH_SERVICE_HOST_URL=http://auth_service:8000/api/v1/auth/
+  #     - MESSENGER_SERVICE_HOST_URL=http://messenger_service:8000/api/v1/messenger/
+  #   depends_on:
+  #     - db
+  #   networks:
+  #     - app
 
   db:
+    container_name: db
     image: postgres:latest
     volumes:
       - postgres_data:/var/lib/postgresql/data/
+    ports:
+      - 5432:5432
     environment:
-      - POSTGRES_USER=db_username
-      - POSTGRES_PASSWORD=db_password
-      - POSTGRES_DB=db_dev
+      - POSTGRES_USER=${db_username}
+      - POSTGRES_PASSWORD=${db_password}
+      - POSTGRES_DB=${db_title}
+      - POSTGRES_HOST=${db_host}
+    networks:
+      - app
 
   nginx:
+    container_name: nginx
     image: nginx:latest
     ports:
       - "8080:8080"
     volumes:
       - ./nginx_config.conf:/etc/nginx/conf.d/default.conf
     depends_on:
-      - messenger_service
       - auth_service
-      - sender_service
+    # - messenger_service
+    # - sender_service
+    networks:
+      - app
 
 volumes:
   postgres_data:
