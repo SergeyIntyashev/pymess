@@ -36,6 +36,12 @@ def get_db_settings() -> DBSettings:
     return DBSettings()
 
 
+db_settings = get_db_settings()
+
+
 @lru_cache
 def get_jwt_settings() -> JWTSettings:
     return JWTSettings()
+
+
+jwt_settings = get_jwt_settings()

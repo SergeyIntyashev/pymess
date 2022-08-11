@@ -2,9 +2,7 @@ from fastapi import Depends, HTTPException
 from loguru import logger
 
 from ..schemes.user import User
-from ..utils.security import get_security
-
-security = get_security()
+from ..utils.security import security
 
 
 async def get_current_active_user(current_user: User = Depends(security.get_current_user)) -> User:

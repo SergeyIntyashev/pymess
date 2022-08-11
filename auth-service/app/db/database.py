@@ -1,12 +1,10 @@
 import databases
 from sqlalchemy import create_engine, MetaData
 
-from ..core.config import get_db_settings
+from ..core.config import db_settings
 
-settings = get_db_settings()
+database = databases.Database(db_settings.db_uri)
 
-database = databases.Database(settings.db_uri)
-
-engine = create_engine(settings.db_uri)
+engine = create_engine(db_settings.db_uri)
 
 metadata = MetaData()

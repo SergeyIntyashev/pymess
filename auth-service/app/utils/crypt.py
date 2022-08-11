@@ -4,7 +4,7 @@ from time import time
 from jose import jwt
 from passlib.context import CryptContext
 
-from ..core.config import get_jwt_settings
+from ..core.config import jwt_settings
 
 
 class Crypter:
@@ -32,10 +32,11 @@ class Crypter:
 
 @lru_cache
 def get_crypter() -> Crypter:
-    jwt_settings = get_jwt_settings()
-
     return Crypter(
         jwt_settings.JWT_SECRET_KEY,
         jwt_settings.ALGORITHM,
         jwt_settings.JWT_EXPIRE_MINUTES
     )
+
+
+crypter = get_crypter()

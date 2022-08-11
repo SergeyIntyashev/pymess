@@ -8,13 +8,13 @@ from loguru import logger
 from ..repositories.users import UsersRepository
 from ..schemes.token import TokenData
 from ..schemes.user import User
-from ..utils.crypt import get_crypter
+from ..utils.crypt import crypter
 
 
 class Security:
     def __init__(self):
         self._users = UsersRepository()
-        self._crypter = get_crypter()
+        self._crypter = crypter
 
     async def authenticate_user(self, username: str, password: str) -> User or bool:
         if not (db_user := await self._users.find_by_username(username=username)):
@@ -60,3 +60,6 @@ class Security:
 @lru_cache
 def get_security() -> Security:
     return Security()
+
+
+security = get_security()
