@@ -32,11 +32,9 @@ services:
     volumes:
       - ./auth-service/:/app/
     ports:
-      - 8002:8000
+      - "8002:8000"
     env_file:
       - ./.env
-    environment:
-      - DATABASE_URI=postgresql://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}/${DB_TITLE}
     depends_on:
       - db
     networks:
