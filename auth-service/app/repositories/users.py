@@ -1,6 +1,6 @@
 from ..db.database import database
-from ..models.user import users
-from ..schemes.user import UserInDB
+from ..models.models import users
+from ..schemes.schemes import UserInDB
 
 
 class UsersRepository:
