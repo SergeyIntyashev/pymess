@@ -1,7 +1,7 @@
 from fastapi import Depends, HTTPException
 from loguru import logger
 
-from ..schemes.user import User
+from ..schemes.schemes import User
 from ..utils.security import security
 
 
