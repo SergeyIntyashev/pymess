@@ -1,14 +1,11 @@
-from functools import lru_cache
-
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError
 from loguru import logger
 
-from ..repositories.users import UsersRepository
-from ..schemes.token import TokenData
-from ..schemes.user import User
 from ..utils.crypt import crypter
+from ..repositories.users import UsersRepository
+from ..schemes.schemes import User, TokenData
 
 
 class Security:
@@ -57,7 +54,6 @@ class Security:
         return self._crypter
 
 
-@lru_cache
 def get_security() -> Security:
     return Security()
 

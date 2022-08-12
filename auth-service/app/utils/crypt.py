@@ -1,4 +1,3 @@
-from functools import lru_cache
 from time import time
 
 from jose import jwt
@@ -30,7 +29,6 @@ class Crypter:
         return jwt.decode(token=token, key=self._secret_key, algorithms=[self._algorithm])
 
 
-@lru_cache
 def get_crypter() -> Crypter:
     return Crypter(
         jwt_settings.JWT_SECRET_KEY,
