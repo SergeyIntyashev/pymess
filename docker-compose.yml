@@ -1,0 +1,92 @@
+version: '3.7'
+
+networks:
+  app:
+    driver: bridge
+
+services:
+
+  # messenger_service:
+  #   container_name: messenger_service
+  #   build: ./messenger-service
+  #   command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+  #   volumes:
+  #     - ./messenger-service/:/app/
+  #   ports:
+  #     - 8001:8000
+  #   env_file:
+  #     - ./.env
+  #   environment:
+  #     - DATABASE_URI=postgresql://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}/${DB_TITLE}
+  #     - AUTH_SERVICE_HOST_URL=http://auth_service:8000/api/v1/auth/
+  #     - SENDER_SERVICE_HOST_URL=http://sender_service:8000/api/v1/sender/
+  #   depends_on:
+  #     - db
+  #   networks:
+  #     - app
+
+  auth_service:
+    container_name: auth_service
+    build: ./auth-service
+    command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+    volumes:
+      - ./auth-service/:/app/
+    ports:
+      - "8002:8000"
+    env_file:
+      - ./.env
+    depends_on:
+      - db
+    networks:
+      - app
+
+  # sender_service:
+  #   container_name: sender_service
+  #   build: ./sender-service
+  #   command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+  #   volumes:
+  #     - ./sender-service/:/app/
+  #   ports:
+  #     - 8003:8000
+  #   env_file:
+  #     - ./.env
+  #   environment:
+  #     - DATABASE_URI=postgresql://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}/${DB_TITLE}
+  #     - AUTH_SERVICE_HOST_URL=http://auth_service:8000/api/v1/auth/
+  #     - MESSENGER_SERVICE_HOST_URL=http://messenger_service:8000/api/v1/messenger/
+  #   depends_on:
+  #     - db
+  #   networks:
+  #     - app
+
+  db:
+    container_name: db
+    image: postgres:latest
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    ports:
+      - ${DB_PORT}:5432
+    environment:
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_TITLE}
+      - POSTGRES_HOST=${DB_HOST}
+    networks:
+      - app
+
+  nginx:
+    container_name: nginx
+    image: nginx:latest
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./nginx_config.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - auth_service
+    # - messenger_service
+    # - sender_service
+    networks:
+      - app
+
+volumes:
+  postgres_data:
