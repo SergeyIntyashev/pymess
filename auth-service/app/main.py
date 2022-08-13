@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 
-from .api.api import auth
-from .db.database import metadata, engine, database
+from api.api import auth
+from db.database import metadata, engine, database
 
 metadata.create_all(bind=engine)
 
