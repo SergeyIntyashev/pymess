@@ -4,11 +4,11 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from loguru import logger
 
-from core.dependencies import get_current_active_user
-from repositories.users import UsersRepository
-from schemes.schemes import UserIn, UserInDB, User, Token
-from utils.crypt import Crypter, get_crypter
-from utils.security import Security, get_security
+from app.core.dependencies import get_current_active_user
+from app.repositories.users import UsersRepository
+from app.schemes.auths import UserIn, UserInDB, User, Token
+from app.utils.crypt import Crypter, get_crypter
+from app.utils.security import Security, get_security
 
 router = APIRouter()
 

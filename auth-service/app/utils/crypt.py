@@ -3,7 +3,7 @@ from time import time
 from jose import jwt
 from passlib.context import CryptContext
 
-from core.config import jwt_settings
+from app.core.config import jwt_settings
 
 
 class Crypter:

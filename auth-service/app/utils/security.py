@@ -3,9 +3,9 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError
 from loguru import logger
 
-from utils.crypt import crypter
-from repositories.users import UsersRepository
-from schemes.schemes import User, TokenData
+from app.utils.crypt import crypter
+from app.repositories.users import UsersRepository
+from app.schemes.auths import User, TokenData
 
 
 class Security:

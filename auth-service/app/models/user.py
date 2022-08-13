@@ -3,7 +3,7 @@ from sqlalchemy import (Column, String,
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import expression
 
-from db.database import metadata
+from app.db.database import metadata
 
 users = Table(
     'users',

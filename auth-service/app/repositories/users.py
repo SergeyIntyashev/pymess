@@ -1,6 +1,6 @@
-from db.database import database
-from models.models import users
-from schemes.schemes import UserInDB
+from app.db.database import database
+from app.models.user import users
+from app.schemes.auths import UserInDB
 
 
 class UsersRepository:
