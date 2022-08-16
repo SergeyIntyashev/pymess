@@ -12,5 +12,5 @@ users = Table(
     Column('username', String(100), unique=True, index=True),
     Column('fullname', String(250)),
     Column('is_active', Boolean, server_default=expression.true(), nullable=False),
-    Column('hashed_password', String),
+    Column('hashed_password', String, nullable=False),
 )
