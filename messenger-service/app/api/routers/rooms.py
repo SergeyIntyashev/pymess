@@ -1,8 +1,9 @@
 from uuid import uuid4, UUID
 
+from app.repositories.messages import MessagesRepository
 from app.repositories.rooms import RoomsRepository
-from app.schemes.messengers import Room, RoomInDB, RoomMembers, User
-from app.tools.security import user_is_room_admin_check
+from app.schemes.messengers import Room, RoomInDB, RoomMembers, User, MessageInDB, MessageFindSettings
+from app.tools.security import user_is_room_admin_check, user_in_room_check
 from fastapi import APIRouter, Depends, status, Request
 from loguru import logger
 
@@ -55,7 +56,7 @@ async def find_room_by_id(room_id: UUID, rooms: RoomsRepository = Depends()):
     return RoomInDB.from_orm(result)
 
 
-@router.get("/members/{room_id}", response_model=RoomMembers,
+@router.get("/{room_id}/members", response_model=RoomMembers,
             status_code=status.HTTP_200_OK)
 async def find_all_members_by_room_id(request: Request, room_id: UUID,
                                       rooms: RoomsRepository = Depends()):
@@ -89,3 +90,20 @@ async def delete_members_from_room(request: Request, room_members: RoomMembers,
     logger.info(f"Successfully deleted {len(room_members.members)} members "
                 f"from room with id {room_members.room_id} "
                 f"by username {request.user.first_name}")
+
+
+@router.get('/{room_id}/all')
+async def get_all_message(request: Request, room_id: UUID,
+                          start: int = 0, stop: int = 30,
+                          rooms: RoomsRepository = Depends(),
+                          messages: MessagesRepository = Depends()):
+    await user_in_room_check(request.user.id, room_id, rooms)
+
+    query_settings = MessageFindSettings(
+        room_id=room_id,
+        start=start,
+        stop=stop
+    )
+    result = await messages.find_all_by_room(query_settings)
+
+    return [MessageInDB.from_orm(message) for message in result]
