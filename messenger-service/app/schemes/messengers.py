@@ -43,6 +43,11 @@ class RoomInDB(Room):
     id: UUID
 
 
+class RoomMembers(BaseModel):
+    room_id: UUID
+    members: list[User | UUID]
+
+
 # MESSAGE
 class Message(BaseModel):
     content: str
