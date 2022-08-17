@@ -11,7 +11,7 @@ class MessagesRepository:
         query = messages.create(**message.dict())
         return await database.execute(query=query)
 
-    async def detele(self, message_id: UUID):
+    async def delete(self, message_id: UUID):
         query = messages.delete(messages.c.id == message_id)
         return await database.execute(query=query)
 

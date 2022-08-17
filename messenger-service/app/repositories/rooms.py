@@ -13,7 +13,7 @@ class RoomsRepository:
         query = rooms.create(**room.dict())
         return await database.execute(query=query)
 
-    async def detele(self, room_id: UUID):
+    async def delete(self, room_id: UUID):
         query = rooms.delete(rooms.c.id == room_id)
         return await database.execute(query=query)
 
@@ -49,3 +49,8 @@ class RoomsRepository:
                   for member_id in room_members.members]
         query = users_rooms.create(values)
         return await database.execute(query=query)
+
+    async def find_member_by_id(self, member_id: UUID, room_id: UUID):
+        query = users_rooms.select(users_rooms.c.user_id == member_id,
+                                   users_rooms.c.room_id == room_id)
+        return await database.fetch_one(query=query)
