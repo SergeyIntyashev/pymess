@@ -17,7 +17,6 @@ services:
   #   env_file:
   #     - ./.env
   #   environment:
-  #     - DATABASE_URI=postgresql://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}/${DB_TITLE}
   #     - AUTH_SERVICE_HOST_URL=http://auth_service:8000/api/v1/auth/
   #     - SENDER_SERVICE_HOST_URL=http://sender_service:8000/api/v1/sender/
   #   depends_on:
@@ -51,7 +50,6 @@ services:
   #   env_file:
   #     - ./.env
   #   environment:
-  #     - DATABASE_URI=postgresql://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}/${DB_TITLE}
   #     - AUTH_SERVICE_HOST_URL=http://auth_service:8000/api/v1/auth/
   #     - MESSENGER_SERVICE_HOST_URL=http://messenger_service:8000/api/v1/messenger/
   #   depends_on:
