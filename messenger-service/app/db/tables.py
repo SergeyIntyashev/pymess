@@ -47,10 +47,12 @@ messages = Table(
     Column('content', String, nullable=False),
     Column('create_at', DateTime, default=datetime.now),
     Column('update_at', DateTime, onupdate=datetime.now),
+    Column('is_premium', Boolean, server_default=false, nullable=False),
     Column('sender_id', UUID(as_uuid=True), ForeignKey("users.id"),
            nullable=False),
     Column('recipient_id', UUID(as_uuid=True), ForeignKey("users.id"),
            nullable=True),
     Column('room_id', UUID(as_uuid=True),
-           ForeignKey("rooms.id", ondelete='CASCADE'), nullable=False, index=True),
+           ForeignKey("rooms.id", ondelete='CASCADE'),
+           nullable=False, index=True)
 )
