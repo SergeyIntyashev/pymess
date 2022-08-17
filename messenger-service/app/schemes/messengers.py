@@ -42,6 +42,9 @@ class Room(BaseModel):
 class RoomInDB(Room):
     id: UUID
 
+    class Config:
+        orm_mode = True
+
 
 class RoomMembers(BaseModel):
     room_id: UUID
@@ -58,6 +61,9 @@ class Message(BaseModel):
 
 class MessageInDB(Message):
     id: UUID
+
+    class Config:
+        orm_mode = True
 
 
 class MessageFindSettings(BaseModel):
