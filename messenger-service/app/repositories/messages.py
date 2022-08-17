@@ -16,7 +16,7 @@ class MessagesRepository:
         return await database.execute(query=query)
 
     async def update(self, message: MessageInDB):
-        query = messages.update().where(messages.c.id == message.id).\
+        query = messages.update().where(messages.c.id == message.id). \
             values(content=message.content)
         return await database.execute(query=query)
 
@@ -25,6 +25,7 @@ class MessagesRepository:
         return await database.fetch_one(query=query)
 
     async def find_all_by_room(self, settings: MessageFindSettings):
-        query = messages.select().where(messages.c.room_id == settings.room_id).\
+        query = messages.select(). \
+            where(messages.c.room_id == settings.room_id). \
             slice(settings.start, settings.stop)
         return await database.fetch_all(query=query)
