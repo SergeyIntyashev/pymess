@@ -43,7 +43,7 @@ async def verify_authorization_header() -> tuple[list[str], FastAPIUser]:
                 )
 
 
-async def check_user_is_room_admin(room_id: UUID, user_id: UUID,
+async def user_is_room_admin_check(room_id: UUID, user_id: UUID,
                                    rooms: RoomsRepository):
     room = await rooms.find_by_id(room_id)
     if room.admin is not user_id:
