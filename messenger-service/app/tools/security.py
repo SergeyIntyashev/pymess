@@ -53,7 +53,7 @@ async def check_user_is_room_admin(room_id: UUID, user_id: UUID,
         raise bad_req_exception
 
 
-async def query_user_matching_check(request: Request, user_id: UUID):
+def query_user_matching_check(request: Request, user_id: UUID):
     if request.user.id is not user_id:
         logger.warning(f"Attempt to perform an action on another user "
                        f"by user with id {user_id}")
