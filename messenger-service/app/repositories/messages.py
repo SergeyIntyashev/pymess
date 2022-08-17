@@ -2,7 +2,7 @@ from uuid import UUID
 
 from app.db.database import database
 from app.db.tables import messages
-from app.schemes.messengers import MessageInDB, MessageFindSettings
+from app.schemes.messengers import MessageInDB, MessageFindSettings, MessageUpdate
 
 
 class MessagesRepository:
@@ -15,7 +15,7 @@ class MessagesRepository:
         query = messages.delete(messages.c.id == message_id)
         return await database.execute(query=query)
 
-    async def update(self, message: MessageInDB):
+    async def update(self, message: MessageUpdate):
         query = messages.update().where(messages.c.id == message.id). \
             values(content=message.content)
         return await database.execute(query=query)
