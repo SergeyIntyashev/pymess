@@ -59,6 +59,11 @@ class Message(BaseModel):
     room_id: UUID
 
 
+class MessageUpdate(BaseModel):
+    id: UUID
+    content: str
+
+
 class MessageInDB(Message):
     id: UUID
 
