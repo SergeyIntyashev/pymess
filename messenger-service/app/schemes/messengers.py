@@ -9,6 +9,7 @@ class UserBase(BaseModel):
     id: UUID
     username: str
     fullname: str | None = None
+    is_premium: bool = False
 
 
 class UserIn(UserBase):
