@@ -3,9 +3,14 @@ from uuid import UUID
 import aiohttp
 from app.core.config import service_hosts
 from app.repositories.rooms import RoomsRepository
-from fastapi import HTTPException, status
+from fastapi import HTTPException, status, Request
 from fastapi_auth_middleware import FastAPIUser
 from loguru import logger
+
+bad_req_exception = HTTPException(
+    status_code=status.HTTP_400_BAD_REQUEST,
+    detail="You can't perform this action"
+)
 
 
 async def verify_authorization_header() -> tuple[list[str], FastAPIUser]:
@@ -42,10 +47,15 @@ async def check_user_is_room_admin(room_id: UUID, user_id: UUID,
                                    rooms: RoomsRepository):
     room = await rooms.find_by_id(room_id)
     if room.admin is not user_id:
-        logger.info(f"Attempt to delete a non-own room "
-                    f"by user with id {user_id}")
+        logger.warning(f"Attempt to perform an action without being a room "
+                       f"administrator by user with id {user_id}")
 
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="You can't delete a room that doesn't belong to you"
-        )
+        raise bad_req_exception
+
+
+async def query_user_matching_check(request: Request, user_id: UUID):
+    if request.user.id is not user_id:
+        logger.warning(f"Attempt to perform an action on another user "
+                       f"by user with id {user_id}")
+
+        raise bad_req_exception
