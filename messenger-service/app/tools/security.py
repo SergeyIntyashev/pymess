@@ -5,9 +5,8 @@ import aiohttp
 from app.core.config import service_hosts
 from app.repositories.rooms import RoomsRepository
 from app.repositories.users import UsersRepository
-from app.schemes.messengers import BlockUserInfo
+from app.schemes.messengers import BlockUserInfo, User
 from fastapi import HTTPException, status, Request
-from fastapi_auth_middleware import FastAPIUser
 from loguru import logger
 
 bad_req_exception = HTTPException(
@@ -16,7 +15,7 @@ bad_req_exception = HTTPException(
 )
 
 
-async def verify_authorization_header() -> tuple[list[str], FastAPIUser]:
+async def verify_authorization_header() -> tuple[list[str], User]:
     async with aiohttp.ClientSession() as session:
         get_user_uri = f"{service_hosts.AUTH_SERVICE_HOST_URL}/me"
         async with session.get(get_user_uri) as response:
@@ -30,13 +29,7 @@ async def verify_authorization_header() -> tuple[list[str], FastAPIUser]:
                         detail="Inactive user"
                     )
 
-                user = FastAPIUser(
-                    first_name=result['username'],
-                    last_name=result['email'],
-                    user_id=result['id']
-                )
-
-                return [], user
+                return [], User.parse_raw(result)
             else:
                 logger.warning("Attempt unauthorized")
                 raise HTTPException(
