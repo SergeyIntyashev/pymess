@@ -73,7 +73,7 @@ services:
       - app
 
   zookeeper:
-    image: 'bitnami/zookeeper:latest'
+    image: bitnami/zookeeper:latest
     container_name: zookeeper
     ports:
       - '2181'
@@ -85,7 +85,7 @@ services:
       - app
 
   kafka:
-    image: 'bitnami/kafka:latest'
+    image: bitnami/kafka:latest
     container_name: kafka
     ports:
       - "9093"
