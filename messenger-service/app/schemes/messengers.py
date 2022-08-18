@@ -19,7 +19,6 @@ class UserIn(UserBase):
 
 class User(UserBase):
     is_active: bool = True
-    is_premium: bool = False
 
     class Config:
         orm_mode = True
