@@ -102,7 +102,8 @@ async def get_all_message(request: Request, room_id: UUID,
     query_settings = MessageFindSettings(
         room_id=room_id,
         start=start,
-        stop=stop
+        stop=stop,
+        is_premium_user=request.user.is_premium
     )
     result = await messages.find_all_by_room(query_settings)
 
