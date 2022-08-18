@@ -1,3 +1,4 @@
+import asyncio
 from functools import lru_cache
 
 from pydantic import BaseSettings
@@ -33,6 +34,16 @@ class ServiceHosts(BaseSettings):
         env_file = '.env'
 
 
+class KafkaSettings(BaseSettings):
+    KAFKA_HOST_URL: str
+    KAFKA_TOPIC: str = "messages"
+    KAFKA_PREMIUM_TOPIC: str = "premium-messages"
+    KAFKA_CONSUMER_GROUP: str = "sender-group"
+
+    class Config:
+        env_file = '.env'
+
+
 @lru_cache
 def get_db_settings() -> DBSettings:
     return DBSettings()
@@ -42,6 +53,13 @@ def get_db_settings() -> DBSettings:
 def get_service_hosts() -> ServiceHosts:
     return ServiceHosts()
 
+
+@lru_cache
+def get_kafka_settings() -> tuple[KafkaSettings, any]:
+    return KafkaSettings(), asyncio.get_event_loop()
+
+
+kafka_settings, loop = get_kafka_settings()
 
 db_settings = get_db_settings()
 
