@@ -17,15 +17,22 @@ class UsersRepository:
         return await database.fetch_one(query=query)
 
     async def find_all_user_rooms(self, user_id: UUID):
-        condition = and_(users_rooms.c.id == rooms.c.room_id,
-                         users_rooms.c.user_id == user_id)
+        condition = and_(
+            users_rooms.c.id == rooms.c.room_id,
+            users_rooms.c.user_id == user_id
+        )
+
         query = rooms.select_from(users_rooms).select_from(
             users_rooms.join(rooms, condition))
         return await database.fetch_all(query=query)
 
     async def find_blocked_user(self, data: BlockUserInfo):
-        query = blocked_users.select(blocked_users.c.user_id == data.user_id,
-                                     blocked_users.c.owner_id == data.owner_id)
+        condition = and_(
+            blocked_users.c.user_id == data.user_id,
+            blocked_users.c.owner_id == data.owner_id
+        )
+
+        query = blocked_users.select(condition)
         return await database.fetch_one(query=query)
 
     async def block_user(self, data: BlockUserInfo):
@@ -33,7 +40,10 @@ class UsersRepository:
         return await database.execute(query=query)
 
     async def unblock_user(self, data: BlockUserInfo):
-        condition = and_(blocked_users.c.user_id == data.user_id,
-                         blocked_users.c.owner_id == data.owner_id)
+        condition = and_(
+            blocked_users.c.user_id == data.user_id,
+            blocked_users.c.owner_id == data.owner_id
+        )
+
         query = blocked_users.filter(condition).delete()
         return await database.execute(query=query)

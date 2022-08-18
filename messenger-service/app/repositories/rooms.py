@@ -39,8 +39,11 @@ class RoomsRepository:
         return await database.fetch_all(query=query)
 
     async def delete_members(self, room_members: RoomMembers):
-        condition = and_(users_rooms.c.user_id.in_(room_members.members),
-                         users_rooms.c.room_id == room_members.room_id)
+        condition = and_(
+            users_rooms.c.user_id.in_(room_members.members),
+            users_rooms.c.room_id == room_members.room_id
+        )
+
         query = users_rooms.filter(condition).delete()
         return await database.execute(query=query)
 
@@ -51,6 +54,10 @@ class RoomsRepository:
         return await database.execute(query=query)
 
     async def find_member_by_id(self, member_id: UUID, room_id: UUID):
-        query = users_rooms.select(users_rooms.c.user_id == member_id,
-                                   users_rooms.c.room_id == room_id)
+        condition = and_(
+            users_rooms.c.user_id == member_id,
+            users_rooms.c.room_id == room_id
+        )
+
+        query = users_rooms.select(condition)
         return await database.fetch_one(query=query)

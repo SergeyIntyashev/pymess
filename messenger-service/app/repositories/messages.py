@@ -3,6 +3,7 @@ from uuid import UUID
 from app.db.database import database
 from app.db.tables import messages
 from app.schemes.messengers import MessageInDB, MessageFindSettings, MessageUpdate
+from sqlalchemy import and_
 
 
 class MessagesRepository:
@@ -25,7 +26,12 @@ class MessagesRepository:
         return await database.fetch_one(query=query)
 
     async def find_all_by_room(self, settings: MessageFindSettings):
-        query = messages.select(). \
-            where(messages.c.room_id == settings.room_id). \
-            slice(settings.start, settings.stop)
+        room_condition = messages.c.room_id == settings.room_id
+
+        condition = room_condition \
+            if settings.is_premium_user \
+            else and_(room_condition, not messages.c.is_premium)
+
+        query = messages.select().where(condition) \
+            .slice(settings.start, settings.stop)
         return await database.fetch_all(query=query)
