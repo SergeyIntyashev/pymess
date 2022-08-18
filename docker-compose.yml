@@ -19,6 +19,7 @@ services:
     environment:
       - AUTH_SERVICE_HOST_URL=http://auth_service:8000/api/v1/auth/
       - SENDER_SERVICE_HOST_URL=http://sender_service:8000/api/v1/sender/
+      - KAFKA_HOST_URL=http://kafka:9093
     depends_on:
       - db
     networks:
@@ -52,6 +53,7 @@ services:
     environment:
       - AUTH_SERVICE_HOST_URL=http://auth_service:8000/api/v1/auth/
       - MESSENGER_SERVICE_HOST_URL=http://messenger_service:8000/api/v1/messenger/
+      - KAFKA_HOST_URL=http://kafka:9093
     depends_on:
       - db
     networks:
