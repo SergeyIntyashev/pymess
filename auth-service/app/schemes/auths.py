@@ -14,6 +14,7 @@ class UserIn(UserBase):
 
 class UserSemi(UserBase):
     is_active: bool = True
+    is_premium: bool = False
 
 
 class User(UserSemi):
