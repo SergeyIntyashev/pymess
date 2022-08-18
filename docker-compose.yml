@@ -76,7 +76,7 @@ services:
     image: 'bitnami/zookeeper:latest'
     container_name: zookeeper
     ports:
-      - '2181:2181'
+      - '2181'
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
     volumes:
@@ -88,8 +88,6 @@ services:
     image: 'bitnami/kafka:latest'
     container_name: kafka
     ports:
-      - "9093:9093"
-    expose:
       - "9093"
     environment:
       - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
