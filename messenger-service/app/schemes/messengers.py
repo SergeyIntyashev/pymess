@@ -19,6 +19,7 @@ class UserIn(UserBase):
 
 class User(UserBase):
     is_active: bool = True
+    is_premium: bool = False
 
     class Config:
         orm_mode = True
@@ -77,3 +78,4 @@ class MessageFindSettings(BaseModel):
     room_id: UUID
     start: int
     stop: int
+    is_premium_user: bool
