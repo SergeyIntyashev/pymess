@@ -1,9 +1,6 @@
-from fastapi import FastAPI
-
 from app.api.api import auth
-from app.db.database import metadata, engine, database
-
-metadata.create_all(bind=engine)
+from app.db.database import database
+from fastapi import FastAPI
 
 app = FastAPI(openapi_url="/api/v1/auth/openapi.json",
               docs_url="/api/v1/auth/docs")
