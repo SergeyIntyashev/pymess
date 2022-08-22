@@ -3,10 +3,10 @@ import asyncio
 from fastapi import FastAPI
 from fastapi_auth_middleware import AuthMiddleware
 
-from api import api
-from core.message_queue_reader import read_messages_from_queue
-from db.database import metadata, engine, database
-from tools.security import verify_authorization_header
+from app.api import api
+from app.core.message_queue_reader import read_messages_from_queue
+from app.db.database import metadata, engine, database
+from app.tools.security import verify_authorization_header
 
 metadata.create_all(bind=engine)
 
