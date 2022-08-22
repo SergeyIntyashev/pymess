@@ -9,7 +9,7 @@ services:
   messenger_service:
     container_name: messenger_service
     build: ./messenger-service
-    command: gunicorn main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8080
+    command: gunicorn app.main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8080
     volumes:
       - ./messenger-service/:/app/
     ports:
@@ -28,7 +28,7 @@ services:
   auth_service:
     container_name: auth_service
     build: ./auth-service
-    command: gunicorn main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8080
+    command: gunicorn app.main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8080
     volumes:
       - ./auth-service/:/app/
     ports:
@@ -43,7 +43,7 @@ services:
   sender_service:
     container_name: sender_service
     build: ./sender-service
-    command: gunicorn main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8080
+    command: gunicorn app.main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8080
     volumes:
       - ./sender-service/:/app/
     ports:
