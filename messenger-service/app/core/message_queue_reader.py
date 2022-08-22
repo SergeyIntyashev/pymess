@@ -1,11 +1,10 @@
 from uuid import uuid4
 
 from aiokafka import AIOKafkaConsumer
-from app.schemes.messengers import MessageInDB
-from loguru import logger
-
 from app.core.config import kafka_settings, loop
 from app.core.tools import messages_repository
+from app.schemes.messengers import MessageInDB
+from loguru import logger
 
 
 async def read_messages_from_queue():
