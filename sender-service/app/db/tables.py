@@ -8,7 +8,7 @@ from sqlalchemy.dialects.postgresql import UUID
 rooms = Table(
     'rooms',
     metadata,
-    Column('id', UUID(as_uuid=True), primary_key=True),
+    Column('id', UUID(as_uuid=True), unique=True, primary_key=True),
     Column('title', String(250), nullable=False),
     Column('admin', ForeignKey('users.id'), primary_key=True),
 )

@@ -6,7 +6,7 @@ from sqlalchemy.dialects.postgresql import UUID
 users = Table(
     'users',
     metadata,
-    Column('id', UUID(as_uuid=True), primary_key=True),
+    Column('id', UUID(as_uuid=True), unique=True, primary_key=True),
     Column('username', String(100), unique=True, index=True),
     Column('fullname', String(250)),
     Column('is_active', Boolean, default=True, nullable=False),
