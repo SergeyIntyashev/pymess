@@ -10,7 +10,7 @@ from loguru import logger
 router = APIRouter()
 
 
-@router.post(response_model=RoomInDB, status_code=status.HTTP_201_CREATED)
+@router.post('/', response_model=RoomInDB, status_code=status.HTTP_201_CREATED)
 async def create_room(request: Request, payload: Room,
                       rooms: RoomsRepository = Depends()):
     new_room = RoomInDB(
