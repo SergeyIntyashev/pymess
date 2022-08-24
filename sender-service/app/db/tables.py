@@ -1,13 +1,14 @@
 from datetime import datetime
 
+from app.db.database import metadata
 from sqlalchemy import (Column, String,
                         Table, DateTime, ForeignKey)
 from sqlalchemy.dialects.postgresql import UUID
 
-from database import metadata
-
 rooms = Table(
-    Column('id', UUID(as_uuid=True), primary_key=True),
+    'rooms',
+    metadata,
+    Column('id', UUID(as_uuid=True), unique=True, primary_key=True),
     Column('title', String(250), nullable=False),
     Column('admin', ForeignKey('users.id'), primary_key=True),
 )

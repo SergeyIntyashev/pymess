@@ -24,8 +24,9 @@ async def delete_message(request: Request, message_id: UUID,
                 f"with id {message.id} in room with id {message.room_id}")
 
 
-@router.patch(status_code=status.HTTP_200_OK)
-async def update_message(request: Request, payload: MessageUpdate,
+@router.patch('/{message_id}', status_code=status.HTTP_200_OK)
+async def update_message(request: Request,
+                         payload: MessageUpdate,
                          messages: MessagesRepository = Depends()):
     message = await messages.find_by_id(payload.id)
     if message.sender_id is not request.user.id:

@@ -1,4 +1,5 @@
 from aiokafka import AIOKafkaProducer
+
 from app.core.config import kafka_settings, loop
 from app.db.repositories import UsersRepository, RoomsRepository
 from app.schemes.senders import Message
@@ -9,8 +10,13 @@ from loguru import logger
 
 router = APIRouter()
 
+producer = AIOKafkaProducer(
+    loop=loop,
+    bootstrap_servers=kafka_settings.KAFKA_HOST_URL
+)
 
-@router.post('send-message', status_code=status.HTTP_200_OK)
+
+@router.post('/send-message', status_code=status.HTTP_200_OK)
 async def send_message(request: Request, message: Message,
                        users: UsersRepository = Depends(),
                        rooms: RoomsRepository = Depends()):
@@ -20,12 +26,6 @@ async def send_message(request: Request, message: Message,
     if message.recipient_id:
         await block_user_check(message.recipient_id, message.sender_id, users)
 
-    producer = AIOKafkaProducer(
-        loop=loop,
-        bootstrap_servers=kafka_settings.KAFKA_HOST_URL
-    )
-
-    await producer.start()
     try:
         value_json = message.json().encode('utf-8')
         topic = kafka_settings.KAFKA_PREMIUM_TOPIC if message.is_premium \
@@ -34,4 +34,3 @@ async def send_message(request: Request, message: Message,
     finally:
         logger.info(f"Message from user with id {message.sender_id} "
                     f"sent to Kafka")
-        await producer.stop()

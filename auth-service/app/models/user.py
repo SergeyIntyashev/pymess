@@ -2,15 +2,14 @@ from app.db.database import metadata
 from sqlalchemy import (Column, String,
                         Boolean, Table)
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.sql import true, false
 
 users = Table(
     'users',
     metadata,
-    Column('id', UUID(as_uuid=True), primary_key=True),
+    Column('id', UUID(as_uuid=True), unique=True, primary_key=True),
     Column('username', String(100), unique=True, index=True),
     Column('fullname', String(250)),
-    Column('is_active', Boolean, server_default=true, nullable=False),
+    Column('is_active', Boolean, default=True, nullable=False),
     Column('hashed_password', String, nullable=False),
-    Column('is_premium', Boolean, server_default=false, nullable=False)
+    Column('is_premium', Boolean, default=False, nullable=False)
 )

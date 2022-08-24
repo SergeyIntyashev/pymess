@@ -9,7 +9,7 @@ services:
   messenger_service:
     container_name: messenger_service
     build: ./messenger-service
-    command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+    command: gunicorn app.main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000
     volumes:
       - ./messenger-service/:/app/
     ports:
@@ -19,7 +19,7 @@ services:
     environment:
       - AUTH_SERVICE_HOST_URL=http://auth_service:8000/api/v1/auth/
       - SENDER_SERVICE_HOST_URL=http://sender_service:8000/api/v1/sender/
-      - KAFKA_HOST_URL=http://kafka:9093
+      - KAFKA_HOST_URL=http://kafka:29092
     depends_on:
       - db
     networks:
@@ -28,7 +28,7 @@ services:
   auth_service:
     container_name: auth_service
     build: ./auth-service
-    command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+    command: gunicorn app.main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000
     volumes:
       - ./auth-service/:/app/
     ports:
@@ -43,7 +43,7 @@ services:
   sender_service:
     container_name: sender_service
     build: ./sender-service
-    command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+    command: gunicorn app.main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000
     volumes:
       - ./sender-service/:/app/
     ports:
@@ -52,7 +52,7 @@ services:
       - ./.env
     environment:
       - AUTH_SERVICE_HOST_URL=http://auth_service:8000/api/v1/auth/
-      - KAFKA_HOST_URL=http://kafka:9093
+      - KAFKA_HOST_URL=http://kafka:29092
     depends_on:
       - db
     networks:
@@ -74,35 +74,30 @@ services:
       - app
 
   zookeeper:
-    image: bitnami/zookeeper:latest
+    image: confluentinc/cp-zookeeper:latest
     container_name: zookeeper
     ports:
-      - '2181'
+      - "22181:2181"
     environment:
-      - ALLOW_ANONYMOUS_LOGIN=yes
-    volumes:
-      - zookeeper_data:/bitnami/zookeeper
+     - ZOOKEEPER_CLIENT_PORT=2181
+     - ZOOKEEPER_TICK_TIME=2000
     networks:
       - app
 
   kafka:
-    image: bitnami/kafka:latest
+    image: confluentinc/cp-kafka:latest
     container_name: kafka
     ports:
-      - "9093"
+      - "29092:29092"
     environment:
+      - KAFKA_BROKER_ID=1
       - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
-      - KAFKA_CREATE_TOPICS="kafka_capstone_event_bus:1:1"
-      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
-      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT
-      - KAFKA_CFG_LISTENERS=CLIENT://:9092,EXTERNAL://:9093
-      - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka:9092,EXTERNAL://localhost:9093
-      - KAFKA_INTER_BROKER_LISTENER_NAME=CLIENT
-      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      - KAFKA_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
     depends_on:
       - zookeeper
-    volumes:
-      - kafka_data:/bitnami/kafka
     networks:
       - app
 
@@ -122,5 +117,3 @@ services:
 
 volumes:
   postgres_data:
-  zookeeper_data:
-  kafka_data:
